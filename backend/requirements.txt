@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+pymupdf
+chromadb
+openai
+google-generativeai
+tiktoken
+pydantic-settings
+python-multipart
