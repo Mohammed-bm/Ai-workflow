@@ -5,44 +5,46 @@ export default function ChatModal({ workflow, onClose }) {
     { role: "assistant", content: "Hi! Ask me anything about your workflow." },
   ]);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const sendMessage = async () => {
   if (!input.trim()) return;
 
   const userMessage = input;
+  setInput("");
 
-  setMessages((msgs) => [
-    ...msgs,
+  setMessages((m) => [
+    ...m,
     { role: "user", content: userMessage },
   ]);
 
-  setInput("");
-
   try {
-    const res = await fetch("http://localhost:8000/api/execute", {
+    const res = await fetch("http://127.0.0.1:8000/api/execute", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        workflow,
         query: userMessage,
+        nodes: workflow.nodes,
+        edges: workflow.edges,
       }),
     });
 
     const data = await res.json();
 
-    setMessages((msgs) => [
-      ...msgs,
-      { role: "assistant", content: data.output },
+    if (!res.ok) {
+      throw new Error(data.error || "Execution failed");
+    }
+
+    setMessages((m) => [
+      ...m,
+      { role: "assistant", content: data.answer },
     ]);
   } catch (err) {
-    setMessages((msgs) => [
-      ...msgs,
-      {
-        role: "assistant",
-        content: "❌ Error executing workflow",
-      },
+    setMessages((m) => [
+      ...m,
+      { role: "assistant", content: "❌ Error executing workflow" },
     ]);
   }
 };
@@ -70,6 +72,12 @@ export default function ChatModal({ workflow, onClose }) {
             {m.content}
           </div>
         ))}
+
+        {loading && (
+          <div className="bg-gray-700 p-2 rounded w-fit">
+            ⏳ Thinking...
+          </div>
+        )}
       </div>
 
       {/* Input */}

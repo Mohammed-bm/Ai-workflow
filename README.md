@@ -108,6 +108,7 @@ Frontend runs at: **http://localhost:5173**
 
 ## 📸 Sample Screenshots 
 
+<<<<<<< HEAD
 ![Workflow Builder](docs/images/workflow-canvas.png)  
 - Screenshot: Visual workflow builder with drag-and-drop components
 
@@ -118,6 +119,18 @@ Frontend runs at: **http://localhost:5173**
 - Screenshot: Real-time workflow validation with error detection
 
 ![Execution Results](docs/images/execution.png)  
+=======
+![Workflow Builder](images/workflowbuilder.png)  
+- Screenshot: Visual workflow builder with drag-and-drop components
+
+![Chat Interface](images/chatinterface.png)  
+- Screenshot: Interactive chat with document context and source attribution
+
+![Validation Results](images/validation.png)  
+- Screenshot: Real-time workflow validation with error detection
+
+![Execution Results](images/execution.png)  
+>>>>>>> d8cc570 (completed project(frontend and backend))
 - Screenshot: AI-generated responses with source citations
 
 ---
@@ -136,6 +149,7 @@ Here's how it works:
 7. **Chat Interface** displays responses with source attribution and maintains conversation history.
 
 ### 📊 Architecture Diagram
+<<<<<<< HEAD
 ```
 ┌─────────────────────────────────────────────────────────┐
 │          Frontend (React + React Flow)                  │
@@ -164,6 +178,10 @@ Here's how it works:
 │ (Vector Store) │ │(Embeddings)│ │     (LLM)      │
 └────────────────┘ └────────────┘ └────────────────┘
 ```
+=======
+
+![Architecure Diagram](images/architecture.png)  
+>>>>>>> d8cc570 (completed project(frontend and backend))
 
 ---
 
@@ -182,8 +200,11 @@ This project is built as a **Full-Stack Engineering Assignment** demonstrating:
 - Workflow orchestration & graph processing  
 - Clean architecture & modular design  
 
+<<<<<<< HEAD
 **Status**: Backend 100% complete ✅ | Frontend in development ⏳
 
+=======
+>>>>>>> d8cc570 (completed project(frontend and backend))
 ---
 
 ## 👤 Author
