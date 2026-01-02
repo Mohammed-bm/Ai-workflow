@@ -108,10 +108,10 @@ Frontend runs at: **http://localhost:5173**
 
 ## 📸 Sample Screenshots 
 
-![Workflow Builder](docs/images/workflow-canvas.png)  
+![Workflow Builder](images/workflowbuilder.png)  
 - Screenshot: Visual workflow builder with drag-and-drop components
 
-![Chat Interface](docs/images/chat-interface.png)  
+![Chat Interface](images/chatinterface.png)  
 - Screenshot: Interactive chat with document context and source attribution
 
 ![Validation Results](docs/images/validation.png)  
