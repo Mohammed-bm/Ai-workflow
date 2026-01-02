@@ -114,7 +114,7 @@ Frontend runs at: **http://localhost:5173**
 ![Chat Interface](images/chatinterface.png)  
 - Screenshot: Interactive chat with document context and source attribution
 
-![Validation Results](docs/images/validation.png)  
+![Validation Results](images/validation.png)  
 - Screenshot: Real-time workflow validation with error detection
 
 ![Execution Results](images/execution.png)  
