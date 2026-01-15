@@ -27,10 +27,6 @@ export default function UserQueryNode({ data }) {
       {/* Action */}
       <button
         onClick={() => {
-          if (!data?.onRun) {
-            alert("Workflow not connected");
-            return;
-          }
           data.onRun(query);
         }}
         className="mt-3 w-full rounded-md bg-blue-600 text-white text-sm font-medium

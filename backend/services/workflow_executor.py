@@ -67,12 +67,14 @@ async def execute_workflow(query: str, nodes: List[Dict], edges: List[Dict]) -> 
                 k=5  # Get top 5 chunks
             )
             
-            if results:
-                context = "\n\n".join([r["text"] for r in results])
-                sources = [r["metadata"] for r in results]
-                print(f"  ✅ Found {len(results)} relevant chunks")
+            if not results:
+                print("❌ KnowledgeBase retrieval failed (no relevant chunks)")
+                context = None
+                sources = []
             else:
-                print(f"  ⚠️ No relevant context found in knowledge base")
+                print(f"  ✅ KnowledgeBase returned {len(results)} chunks")
+                context = "\n\n".join(r["text"] for r in results)
+                sources = [r["metadata"] for r in results]
                 
         except Exception as e:
             print(f"  ⚠️ Knowledge Base failed: {e}")

@@ -1,39 +1,61 @@
-import math
+import chromadb
+from chromadb.config import Settings
+import os
+import shutil
+import uuid
+from typing import List
 
 class VectorStoreService:
     def __init__(self):
-        self.store = []
+        self.persist_dir = os.getenv("CHROMA_PERSIST_DIR", "./chroma_data")
+        self._init_client()
 
-    def _cosine_similarity(self, a, b):
-        dot = sum(x * y for x, y in zip(a, b))
-        norm_a = math.sqrt(sum(x * x for x in a))
-        norm_b = math.sqrt(sum(y * y for y in b))
-        return dot / (norm_a * norm_b + 1e-8)
+    def _init_client(self):
+        self.client = chromadb.PersistentClient(
+            path=self.persist_dir,
+            settings=Settings(anonymized_telemetry=False)
+        )
+        self.collection = self.client.get_or_create_collection(
+            name="documents",
+            metadata={"hnsw:space": "cosine"}
+        )
+        print(f"📦 ChromaDB initialized at {self.persist_dir}")
 
-    def similarity_search(self, query_embedding, k=5):
-        print("VECTOR STORE SIZE:", len(self.store))
+    def hard_reset(self):
+        """🔥 Completely wipe vector DB from disk"""
+        if os.path.exists(self.persist_dir):
+            shutil.rmtree(self.persist_dir)
+            print("🧹 ChromaDB directory deleted")
 
-        scored = []
-        for item in self.store:
-            score = self._cosine_similarity(
-                query_embedding,
-                item["embedding"]
-            )
-            scored.append((score, item))
+        os.makedirs(self.persist_dir, exist_ok=True)
+        self._init_client()
 
-        scored.sort(key=lambda x: x[0], reverse=True)
-        return [item for _, item in scored[:k]]
+    def add_text(self, texts: List[str], embeddings: List[List[float]], metadatas: List[dict]):
+        ids = [str(uuid.uuid4()) for _ in texts]
+        self.collection.add(
+            ids=ids,
+            documents=texts,
+            embeddings=embeddings,
+            metadatas=metadatas
+        )
+        print(f"✅ Added {len(texts)} vectors")
 
-    def add_text(self, texts, embeddings, metadatas):
-        for t, e, m in zip(texts, embeddings, metadatas):
-            self.store.append({
-                "text": t,
-                "embedding": e,
-                "metadata": m
+    def similarity_search(self, query_embedding: List[float], k: int = 5):
+        results = self.collection.query(
+            query_embeddings=[query_embedding],
+            n_results=k,
+            include=["documents", "metadatas", "distances"]
+        )
+
+        documents = []
+        for i, doc in enumerate(results["documents"][0]):
+            documents.append({
+                "text": doc,
+                "metadata": results["metadatas"][0][i],
+                "score": results["distances"][0][i]
             })
 
-        print(f"🧠 Stored {len(texts)} vectors in memory")
+        print(f"🔍 Found {len(documents)} documents")
+        return documents
 
-
-# ✅ SINGLETON INSTANCE (THIS is what everyone imports)
 vector_store = VectorStoreService()

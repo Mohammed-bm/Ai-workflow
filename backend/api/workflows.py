@@ -24,8 +24,18 @@ class BuildResponse(BaseModel):
 @router.post("/validate")
 def validate(request: ValidateRequest):
     """Validates workflow structure"""
-    result = validate_workflow(request.nodes, request.edges)
-    return result
+    validation = validate_workflow(request.nodes, request.edges)
+
+    if not validation["valid"]:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "message": "Workflow validation failed",
+                "errors": validation["errors"]
+            }
+        )
+
+    return {"valid": True}
 
 # NEW: Build endpoint
 @router.post("/build", response_model=BuildResponse)

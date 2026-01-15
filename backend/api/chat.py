@@ -21,7 +21,11 @@ def chat(req: ChatRequest):
         k=5
     )
 
-    context = "\n".join([r["text"] for r in results])
+    if not results:
+        print("❌ Knowledge base empty or failed")
+        context = None
+    else:
+        context = "\n".join(r["text"] for r in results)
 
     answer = llm_service.generate(
         question=req.question,

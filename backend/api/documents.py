@@ -1,71 +1,92 @@
 import time
 from fastapi import APIRouter, UploadFile, File, HTTPException
-import fitz
+import fitz  # PyMuPDF
 from services.vector_store_service import vector_store
-
 from services.embedding_service import EmbeddingService
 from utils.chunking import chunk_text
 
 router = APIRouter(prefix="/documents", tags=["documents"])
-
 embedding_service = EmbeddingService()
 
 @router.post("/upload")
-def upload_document(file: UploadFile = File(...)):
+async def upload_document(file: UploadFile = File(...)):
+    """Upload PDF and store in ChromaDB embeddings"""
     start = time.time()
-    print("🟢 0. Request received")
-
+    print(f"🟢 Upload started: {file.filename}")
+    
+    # Validate file type
     if not file.filename.lower().endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Only PDF files allowed")
-
+        raise HTTPException(status_code=400, detail="Only PDF files are allowed")
+    
     try:
-        print("🟡 1. Reading PDF bytes")
-        pdf_bytes = file.file.read()
-        print(f"✅ PDF read: {len(pdf_bytes)} bytes ({time.time() - start:.2f}s)")
-
-        print("🟡 2. Opening PDF with PyMuPDF")
+        # 1. Read PDF bytes
+        print("📄 Reading PDF...")
+        pdf_bytes = await file.read()
+        print(f"✅ Read {len(pdf_bytes)} bytes ({time.time() - start:.2f}s)")
+        
+        # 2. Extract text
+        print("📝 Extracting text...")
         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-
-        print("🟡 3. Extracting text")
         extracted_text = ""
-        for i, page in enumerate(doc):
+
+        for page in doc:
             extracted_text += page.get_text()
-        print(f"✅ Text extracted: {len(extracted_text)} chars ({time.time() - start:.2f}s)")
 
-        print("🟡 4. Chunking text")
-        chunks = chunk_text(extracted_text)
-        print(f"✅ Chunks created: {len(chunks)} ({time.time() - start:.2f}s)")
+        doc.close()
 
-        print("🟡 6. Generating embeddings")
+        if not extracted_text.strip():
+            raise HTTPException(status_code=400, detail="No text found in PDF")
+
+        print(f"✅ Extracted {len(extracted_text)} characters ({time.time() - start:.2f}s)")
+
+        # 3. Chunk text
+        print("✂️ Chunking text...")
+        chunks = chunk_text(extracted_text, chunk_size=500, overlap=50)
+
+        if not chunks:
+            raise HTTPException(status_code=400, detail="Failed to create text chunks")
+
+        print(f"✅ Created {len(chunks)} chunks ({time.time() - start:.2f}s)")
+
+        # 4. Generate embeddings
+        print("🧠 Generating embeddings...")
         embeddings = embedding_service.embed_texts(chunks)
-        print(f"✅ Embeddings done ({time.time() - start:.2f}s)")
+        print(f"✅ Generated {len(embeddings)} embeddings ({time.time() - start:.2f}s)")
 
-        print("🟡 7. Preparing metadata")
+        # 🧹 5. CLEAR VECTOR DB (IMPORTANT)
+        vector_store.hard_reset()
+
+        # 6. Prepare metadata
         metadatas = [
-            {"filename": file.filename, "chunk_index": i}
+            {
+                "filename": file.filename,
+                "chunk_index": i,
+                "total_chunks": len(chunks)
+            }
             for i in range(len(chunks))
         ]
 
-        print("🔍 DEBUG")
-        print("Chunks count:", len(chunks))
-        print("Embeddings count:", len(embeddings))
-        print("Metadatas count:", len(metadatas))
-
-        print("🟡 8. Storing in ChromaDB")
+        # 7. Store in ChromaDB
+        print("💾 Storing in ChromaDB...")
         vector_store.add_text(
             texts=chunks,
             embeddings=embeddings,
-            metadatas=metadatas,
+            metadatas=metadatas
         )
-        print(f"✅ Stored in ChromaDB ({time.time() - start:.2f}s)")
 
-        print("🟢 9. Returning response")
+        total_time = time.time() - start
+        print(f"🎉 Upload complete in {total_time:.2f}s")
+
         return {
+            "status": "success",
             "filename": file.filename,
-            "chunks": len(chunks),
-            "status": "stored"
+            "chunks_created": len(chunks),
+            "processing_time": f"{total_time:.2f}s",
+            "message": "Document uploaded and indexed successfully"
         }
 
+    except HTTPException:
+        raise
     except Exception as e:
-        print("🔴 ERROR:", str(e))
+        print(f"❌ Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))

@@ -1,8 +1,22 @@
+# services/embedding_service.py
+from sentence_transformers import SentenceTransformer
+
 class EmbeddingService:
+    def __init__(self):
+        self.model = SentenceTransformer("all-MiniLM-L6-v2")
+
     def embed_texts(self, texts: list[str]) -> list[list[float]]:
-        # Temporary dummy embeddings (dimension = 3)
-        return [[0.0, 0.0, 0.0] for _ in texts]
-    
-    def embed_query(self, text: str):
-        # Reuse the same embedding model
-        return self.embed_texts([text])[0]
+        embeddings = self.model.encode(
+            texts,
+            batch_size=32,
+            convert_to_numpy=True,
+            normalize_embeddings=True,
+        )
+        return embeddings.tolist()
+
+    def embed_query(self, text: str) -> list[float]:
+        return self.model.encode(
+            text,
+            convert_to_numpy=True,
+            normalize_embeddings=True,
+        ).tolist()
