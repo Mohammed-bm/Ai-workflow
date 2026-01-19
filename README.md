@@ -1,6 +1,5 @@
 # 🔄 No-Code Workflow Builder
 
-**An AI-powered no-code platform for building and executing intelligent workflows.**  
 An AI-powered no-code platform for visually building, saving, loading, and executing intelligent workflows using a drag-and-drop canvas.
 
 Users can design workflows by connecting components (User Query → Knowledge Base → LLM → Output), persist them in a database, and dynamically execute them using a Retrieval-Augmented Generation (RAG) pipeline.
@@ -120,7 +119,7 @@ Frontend runs at: **http://localhost:5173**
 ![Execution Results](images/execution.png)  
 - Screenshot: AI-generated responses with source citations
 
-![Saved Workflows](images/savedworkflows.png)  
+![Saved Workflows](images/savedworkflow.png)  
 - Screenshot: Persistent workflow management with database-backed save and reload support
 
 ---
