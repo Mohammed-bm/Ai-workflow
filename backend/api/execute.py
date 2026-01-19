@@ -1,5 +1,3 @@
-# api/execute.py
-
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Dict, Optional
@@ -14,13 +12,6 @@ class ExecuteRequest(BaseModel):
     nodes: Optional[List[Dict]] = None  # ← Optional (for backward compatibility)
     edges: Optional[List[Dict]] = None
 
-class ExecuteResponse(BaseModel):
-    success: bool
-    answer: str = None
-    sources: List[Dict] = []
-    has_context: bool = False
-    metadata: Dict = {}
-    error: str = None
 
 @router.post("", response_model=ExecuteResponse)
 async def execute(request: ExecuteRequest):

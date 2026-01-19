@@ -1,5 +1,3 @@
-# services/workflow_executor.py
-
 from typing import List, Dict, Optional
 from services.embedding_service import EmbeddingService
 from services.vector_store_service import vector_store

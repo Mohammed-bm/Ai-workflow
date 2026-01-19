@@ -51,7 +51,7 @@ export default function ChatModal({ workflow, onClose }) {
 
 
   return (
-    <div className="fixed bottom-4 right-4 w-96 h-[500px] bg-gray-900 border border-gray-700 rounded-lg flex flex-col z-50">
+    <div className="fixed bottom-4 right-4 w-96 h-500 bg-gray-900 border border-gray-700 rounded-lg flex flex-col z-50">
       {/* Header */}
       <div className="p-3 border-b border-gray-700 flex justify-between">
         <span className="font-semibold">Chat with Stack</span>

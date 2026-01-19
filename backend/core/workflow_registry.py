@@ -1,5 +1,3 @@
-# core/workflow_registry.py
-
 from typing import Dict, Optional
 import uuid
 

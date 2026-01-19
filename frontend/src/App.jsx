@@ -16,6 +16,9 @@ export default function App() {
       <TopBar
         onBuild={() => actionsRef.current.buildStack?.()}
         onSave={() => actionsRef.current.saveWorkflow?.()}
+        onSelectWorkflow={(id) => {
+          actionsRef.current?.loadWorkflow(id);
+        }}
         onChat={() => {
           if (!built) {
             alert("Build stack first");

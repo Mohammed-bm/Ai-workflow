@@ -1,6 +1,6 @@
 import time
 from fastapi import APIRouter, UploadFile, File, HTTPException
-import fitz  # PyMuPDF
+import fitz 
 from services.vector_store_service import vector_store
 from services.embedding_service import EmbeddingService
 from utils.chunking import chunk_text
@@ -54,7 +54,7 @@ async def upload_document(file: UploadFile = File(...)):
         print(f"✅ Generated {len(embeddings)} embeddings ({time.time() - start:.2f}s)")
 
         # 🧹 5. CLEAR VECTOR DB (IMPORTANT)
-        vector_store.hard_reset()
+        vector_store.clear_collection()
 
         # 6. Prepare metadata
         metadatas = [

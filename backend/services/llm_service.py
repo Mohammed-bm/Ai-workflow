@@ -1,10 +1,9 @@
-# services/llm_service.py
 import os
 from typing import Optional
 from google import genai
 from dotenv import load_dotenv
 
-load_dotenv()  # 👈 THIS IS THE MISSING PIECE
+load_dotenv() 
 
 class LLMService:
     def __init__(self):

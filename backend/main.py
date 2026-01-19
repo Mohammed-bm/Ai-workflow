@@ -1,4 +1,3 @@
-# main.py (CORRECT)
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -7,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 # Import all routers
-from api import documents, chat, workflows, execute
+from api import documents, workflows, execute
 
 app = FastAPI(title="AI Workflow Backend")
 
@@ -22,7 +21,6 @@ app.add_middleware(
 
 # Register routers (only once each!)
 app.include_router(documents.router)
-app.include_router(chat.router)
 app.include_router(workflows.router)
 app.include_router(execute.router)
 

@@ -2,10 +2,12 @@ import { Handle, Position } from "reactflow";
 
 export default function OutputNode({ data }) {
   return (
-    <div className="bg-white border rounded p-3 w-64 shadow">
-      <div className="font-semibold text-sm mb-2">Output</div>
+    <div className="bg-white border border-gray-300 rounded-xl p-5 shadow-md min-w-60 max-w-120">
+      <div className="font-semibold text-sm mb-3 text-gray-700">
+        Output
+      </div>
 
-      <div className="text-sm whitespace-pre-wrap min-h-[60px]">
+      <div className="text-sm text-gray-800 whitespace-normal wrap-break-word">
         {data?.answer || "No output yet"}
       </div>
 

@@ -21,14 +21,14 @@ class VectorStoreService:
         )
         print(f"📦 ChromaDB initialized at {self.persist_dir}")
 
-    def hard_reset(self):
-        """🔥 Completely wipe vector DB from disk"""
-        if os.path.exists(self.persist_dir):
-            shutil.rmtree(self.persist_dir)
-            print("🧹 ChromaDB directory deleted")
+    def clear_collection(self):
+        self.client.delete_collection("documents")
+        self.collection = self.client.get_or_create_collection(
+            name="documents",
+            metadata={"hnsw:space": "cosine"}
+        )
+        print("🧹 ChromaDB collection cleared")
 
-        os.makedirs(self.persist_dir, exist_ok=True)
-        self._init_client()
 
     def add_text(self, texts: List[str], embeddings: List[List[float]], metadatas: List[dict]):
         ids = [str(uuid.uuid4()) for _ in texts]

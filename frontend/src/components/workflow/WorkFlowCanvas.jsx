@@ -84,16 +84,63 @@ export default function WorkflowCanvas({ onBuilt, exposeActions }) {
 
   /* -------------------- SAVE WORKFLOW -------------------- */
   const saveWorkflow = async () => {
-    if (!builtRef.current || !workflowIdRef.current) {
-      alert("Build stack before saving workflow");
+  if (!builtRef.current || !workflowIdRef.current) {
+    alert("Build stack before saving workflow");
+    return;
+  }
+
+  const name = prompt("Enter workflow name");
+  if (!name) return;
+
+  const res = await fetch("http://127.0.0.1:8000/api/workflows/save", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      workflow_id: workflowIdRef.current,
+      name,
+      nodes: nodesRef.current,
+      edges: edgesRef.current,
+    }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    alert(data.detail || "Failed to save workflow");
+    return;
+  }
+
+  alert("✅ Workflow saved successfully");
+};
+
+/* -------------------- LOAD WORKFLOW (TEMP) -------------------- */
+const loadWorkflow = async (workflowId) => {
+  try {
+    const res = await fetch(
+      `http://127.0.0.1:8000/api/workflows/${workflowId}`
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.detail || "Failed to load workflow");
       return;
     }
 
-    const name = prompt("Enter workflow name");
-    if (!name) return;
+    setNodes(data.nodes);
+    setEdges(data.edges);
 
-    alert(`💾 Workflow "${name}" saved\nID: ${workflowIdRef.current}`);
-  };
+    workflowIdRef.current = data.workflow_id;
+    builtRef.current = true;
+    setBuilt(true);
+
+    alert(`📂 Loaded workflow: ${data.name}`);
+  } catch (err) {
+    console.error(err);
+    alert("❌ Failed to load workflow");
+  }
+};
+
 
   /* -------------------- RUN WORKFLOW -------------------- */
   const runWorkflow = async (query) => {
@@ -166,6 +213,7 @@ export default function WorkflowCanvas({ onBuilt, exposeActions }) {
   exposeActions?.({
     buildStack,
     saveWorkflow,
+    loadWorkflow,
   });
 }, [exposeActions, buildStack, saveWorkflow]);
 
@@ -175,7 +223,7 @@ export default function WorkflowCanvas({ onBuilt, exposeActions }) {
       ref={wrapperRef}
       onDrop={onDrop}
       onDragOver={(e) => e.preventDefault()}
-      className="h-full w-full relative bg-[radial-gradient(#2a2a2a_1px,transparent_1px)] bg-[size:20px_20px]"
+      className="h-full w-full relative bg-[radial-gradient(#2a2a2a_1px,transparent_1px)] bg-size-[20px_20px]"
     >
       <ReactFlow
         nodes={nodes}

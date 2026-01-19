@@ -1,4 +1,3 @@
-# services/embedding_service.py
 from sentence_transformers import SentenceTransformer
 
 class EmbeddingService:

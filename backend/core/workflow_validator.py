@@ -1,5 +1,3 @@
-# core/workflow_validator.py
-
 from collections import defaultdict, deque
 
 REQUIRED_SINGLE = ["userQuery"]

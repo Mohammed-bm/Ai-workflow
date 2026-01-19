@@ -11,13 +11,11 @@ export default function UserQueryNode({ data }) {
         <h3 className="text-sm font-semibold text-gray-800">
           User Query
         </h3>
-        <span className="text-xs text-gray-400">Input</span>
       </div>
 
       {/* Input */}
       <textarea
-        className="w-full resize-none rounded-md border border-gray-300 px-3 py-2 text-sm
-                   focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+        className="w-full resize-none rounded-md border px-3 py-2 text-s"
         rows={3}
         placeholder="Type your question here..."
         value={query}
@@ -39,7 +37,7 @@ export default function UserQueryNode({ data }) {
       <Handle
         type="source"
         position={Position.Right}
-        className="!bg-blue-600 w-3 h-3"
+        className="bg-blue-600 w-3 h-3"
       />
     </div>
   );

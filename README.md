@@ -1,16 +1,20 @@
 # 🔄 No-Code Workflow Builder
 
 **An AI-powered no-code platform for building and executing intelligent workflows.**  
-Visually create workflows with drag-and-drop components, process documents, retrieve context from vector databases, and generate AI responses through an interactive chat interface.
+An AI-powered no-code platform for visually building, saving, loading, and executing intelligent workflows using a drag-and-drop canvas.
+
+Users can design workflows by connecting components (User Query → Knowledge Base → LLM → Output), persist them in a database, and dynamically execute them using a Retrieval-Augmented Generation (RAG) pipeline.
 
 ---
 
 ## 🚀 Project Overview
 
-This project is a **Full-Stack Engineering Assignment** demonstrating a complete RAG (Retrieval-Augmented Generation) system with visual workflow orchestration.  
-Users can create custom workflows by connecting components like Knowledge Base, LLM Engine, and Output nodes, then interact with their workflows through a chat interface.  
-Built with FastAPI, React Flow, ChromaDB, and Google Gemini, designed for scalability and real-world AI applications.
-
+This project demonstrates a full-stack AI system combining:
+- Visual workflow orchestration (React Flow)
+- Backend workflow persistence & execution (FastAPI)
+- Document-aware AI responses (RAG)
+- Vector search using embeddings
+The focus is on system design, API clarity, and real-world AI pipelines, not just UI.
 ---
 
 ## 🎯 Key Features
@@ -22,7 +26,6 @@ Built with FastAPI, React Flow, ChromaDB, and Google Gemini, designed for scalab
 - ✅ Workflow Validation: Graph-based validation with error detection  
 - ✅ Dynamic Execution: Orchestrates workflows based on user-defined connections  
 - ✅ Free LLM Integration: Google Gemini for zero-cost AI responses  
-- ✅ Chat Interface: Interactive Q&A with document context and source attribution  
 
 ---
 
@@ -111,14 +114,14 @@ Frontend runs at: **http://localhost:5173**
 ![Workflow Builder](images/workflowbuilder.png)  
 - Screenshot: Visual workflow builder with drag-and-drop components
 
-![Chat Interface](images/chatinterface.png)  
-- Screenshot: Interactive chat with document context and source attribution
-
 ![Validation Results](images/validation.png)  
 - Screenshot: Real-time workflow validation with error detection
 
 ![Execution Results](images/execution.png)  
 - Screenshot: AI-generated responses with source citations
+
+![Saved Workflows](images/savedworkflows.png)  
+- Screenshot: Persistent workflow management with database-backed save and reload support
 
 ---
 
@@ -155,9 +158,6 @@ This project is built as a **Full-Stack Engineering Assignment** demonstrating:
 - Vector databases & semantic search  
 - Workflow orchestration & graph processing  
 - Clean architecture & modular design  
-
-<<<<<<< HEAD
-**Status**: Backend 100% complete ✅ | Frontend in development ⏳
 
 ---
 
