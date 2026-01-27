@@ -3,6 +3,7 @@ import { Handle, Position } from "reactflow";
 
 export default function UserQueryNode({ data }) {
   const [query, setQuery] = useState("");
+  const [error, setError] = useState("");
 
   return (
     <div className="w-64 rounded-xl bg-white border border-gray-200 shadow-sm p-4">
@@ -22,9 +23,26 @@ export default function UserQueryNode({ data }) {
         onChange={(e) => setQuery(e.target.value)}
       />
 
+      {error && (
+        <p className="mt-1 text-xs text-red-600">
+          {error}
+        </p>
+      )}
+
       {/* Action */}
       <button
         onClick={() => {
+          if (!query.trim()) {
+            setError("Enter text");
+            return;
+          }
+
+          if (typeof data.onRun !== "function") {
+            console.error("onRun is not attached", data);
+            return;
+          }
+
+          setError("");
           data.onRun(query);
         }}
         className="mt-3 w-full rounded-md bg-blue-600 text-white text-sm font-medium

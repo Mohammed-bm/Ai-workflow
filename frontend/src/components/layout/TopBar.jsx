@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
+
 export default function TopBar({ onBuild, onSave, onSelectWorkflow }) {
   const [workflows, setWorkflows] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/workflows")
+    fetch(`${API_BASE}/api/workflows`)
       .then((res) => res.json())
       .then(setWorkflows)
       .catch(console.error);

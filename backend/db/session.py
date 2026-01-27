@@ -9,7 +9,11 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(
     DATABASE_URL,
-    echo=True,          # shows SQL in logs (important for sanity)
+    pool_pre_ping=True,        
+    pool_size=5,
+    max_overflow=10,
+    pool_timeout=30,
+    echo=False         
 )
 
 SessionLocal = sessionmaker(
@@ -17,3 +21,10 @@ SessionLocal = sessionmaker(
     autoflush=False,
     bind=engine,
 )
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

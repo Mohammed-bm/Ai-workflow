@@ -18,11 +18,43 @@ def create_workflow(nodes: list, edges: list) -> str:
     
     return workflow_id
 
-def get_workflow(workflow_id: str) -> Optional[dict]:
+def get_workflow(workflow_id: str, db=None) -> Optional[dict]:
     """
-    Retrieve workflow by ID
+    Retrieve workflow by ID:
+    1. Check in-memory cache
+    2. Fallback to database
     """
-    return WORKFLOWS.get(workflow_id)
+
+    # 1️⃣ In-memory (fast path)
+    workflow = WORKFLOWS.get(workflow_id)
+    if workflow:
+        print(f"⚡ Workflow {workflow_id} found in memory")
+        return workflow
+
+    print(f"🗄️ Workflow {workflow_id} not in memory, checking DB")
+
+    # 2️⃣ Database fallback
+    if db:
+        db_workflow = (
+            db.query(Workflow)
+            .filter(Workflow.id == workflow_id)
+            .first()
+        )
+
+        if db_workflow:
+            workflow_data = {
+                "nodes": db_workflow.nodes,
+                "edges": db_workflow.edges,
+            }
+
+            # 🔁 Warm the cache
+            WORKFLOWS[workflow_id] = workflow_data
+            print(f"✅ Workflow {workflow_id} loaded from DB into memory")
+
+            return workflow_data
+
+    print(f"❌ Workflow {workflow_id} not found anywhere")
+    return None
 
 def delete_workflow(workflow_id: str) -> bool:
     """

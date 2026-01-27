@@ -8,3 +8,7 @@ google-generativeai
 tiktoken
 pydantic-settings
 python-multipart
+psycopg2-binary
+sentence-transformers
+sqlalchemy
+asyncpg

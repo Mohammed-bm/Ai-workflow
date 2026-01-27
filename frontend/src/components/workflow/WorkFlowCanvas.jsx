@@ -11,6 +11,8 @@ import KnowledgeBaseNode from "./nodes/KnowledgeBaseNode";
 import LLMEngineNode from "./nodes/LLMEngineNode";
 import OutputNode from "./nodes/OutputNode";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
+
 const nodeTypes = {
   userQuery: UserQueryNode,
   knowledgeBase: KnowledgeBaseNode,
@@ -49,7 +51,7 @@ export default function WorkflowCanvas({ onBuilt, exposeActions }) {
     }
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/workflows/build", {
+      const res = await fetch(`${API_BASE}/api/workflows/build`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -92,7 +94,7 @@ export default function WorkflowCanvas({ onBuilt, exposeActions }) {
   const name = prompt("Enter workflow name");
   if (!name) return;
 
-  const res = await fetch("http://127.0.0.1:8000/api/workflows/save", {
+  const res = await fetch(`${API_BASE}/api/workflows/save`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -117,7 +119,7 @@ export default function WorkflowCanvas({ onBuilt, exposeActions }) {
 const loadWorkflow = async (workflowId) => {
   try {
     const res = await fetch(
-      `http://127.0.0.1:8000/api/workflows/${workflowId}`
+      `${API_BASE}/api/workflows/${workflowId}`
     );
 
     const data = await res.json();
@@ -127,7 +129,15 @@ const loadWorkflow = async (workflowId) => {
       return;
     }
 
-    setNodes(data.nodes);
+    setNodes(
+      data.nodes.map((node) => ({
+        ...node,
+        data: {
+          ...node.data,
+          onRun: runWorkflow, // 🔥 reattach runtime function
+        },
+      }))
+    );
     setEdges(data.edges);
 
     workflowIdRef.current = data.workflow_id;
@@ -150,7 +160,7 @@ const loadWorkflow = async (workflowId) => {
     }
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/api/execute", {
+      const res = await fetch(`${API_BASE}/api/execute`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

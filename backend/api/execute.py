@@ -1,20 +1,29 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 from services.workflow_executor import execute_workflow
-from core.workflow_registry import get_workflow  # ← Add
+from core.workflow_registry import get_workflow  
+from db.session import get_db
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/api/execute", tags=["execute"])
 
 class ExecuteRequest(BaseModel):
-    workflow_id: Optional[str] = None  # ← New: workflow_id
+    workflow_id: Optional[str] = None 
     query: str
-    nodes: Optional[List[Dict]] = None  # ← Optional (for backward compatibility)
+    nodes: Optional[List[Dict]] = None 
     edges: Optional[List[Dict]] = None
 
+class ExecuteResponse(BaseModel):
+    success: bool
+    answer: str = None
+    sources: List[Dict] = []
+    has_context: bool = False
+    metadata: Dict = {}
+    error: str = None
 
 @router.post("", response_model=ExecuteResponse)
-async def execute(request: ExecuteRequest):
+async def execute(request: ExecuteRequest, db: Session = Depends(get_db),):
     """
     Execute workflow with query
     
@@ -67,6 +76,9 @@ async def execute(request: ExecuteRequest):
             metadata=result["metadata"]
         )
         
+    except HTTPException:
+        raise 
+
     except ValueError as e:
         print(f"❌ Validation error: {e}")
         raise HTTPException(status_code=400, detail=str(e))

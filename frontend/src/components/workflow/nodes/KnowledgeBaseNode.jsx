@@ -1,6 +1,8 @@
 import { Handle, Position } from "reactflow";
 import { useState } from "react";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
+
 export default function KnowledgeBaseNode({ data }) {
   const [uploading, setUploading] = useState(false);
   const [uploaded, setUploaded] = useState(false);
@@ -15,7 +17,7 @@ export default function KnowledgeBaseNode({ data }) {
     formData.append("file", file);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/documents/upload", {
+      const res = await fetch(`${API_BASE}/documents/upload`, {
         method: "POST",
         body: formData,
       });

@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
+
 export default function ChatModal({ workflow, onClose }) {
   const [messages, setMessages] = useState([
     { role: "assistant", content: "Hi! Ask me anything about your workflow." },
@@ -19,7 +21,7 @@ export default function ChatModal({ workflow, onClose }) {
   ]);
 
   try {
-    const res = await fetch("http://127.0.0.1:8000/api/execute", {
+    const res = await fetch(`${API_BASE}/api/execute`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

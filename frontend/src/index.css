@@ -1,5 +1,5 @@
 @import "tailwindcss";
-/* 🔥 Override React Flow default node styles */
+
 .react-flow__node-output {
   width: auto !important;
   padding: 0 !important;
