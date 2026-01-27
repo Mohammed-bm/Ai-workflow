@@ -1,6 +1,8 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from services.vector_store_service import vector_store
+from services.vector_store_service import get_vector_store
+
+vector_store = get_vector_store()
 from services.embedding_service import EmbeddingService
 from services.llm_service import LLMService
 

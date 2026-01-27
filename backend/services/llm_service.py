@@ -1,18 +1,29 @@
 import os
 from typing import Optional
-from google import genai
-from dotenv import load_dotenv
 
-load_dotenv() 
+_client = None
+
+def get_llm_client():
+    global _client
+
+    if _client is None:
+        from google import genai
+
+        api_key = os.getenv("GOOGLE_API_KEY")
+        if not api_key:
+            raise RuntimeError("GOOGLE_API_KEY not set")
+
+        _client = genai.Client(api_key=api_key)
+
+    return _client
 
 class LLMService:
     def __init__(self):
-        self.client = genai.Client(
-            api_key=os.getenv("GOOGLE_API_KEY")
-        )
+        pass
 
     def chat(self, prompt: str) -> str:
-        response = self.client.models.generate_content(
+        client = get_llm_client()
+        response = client.models.generate_content(
             model="models/gemini-flash-latest",
             contents=prompt,
         )

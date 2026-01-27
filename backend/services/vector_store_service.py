@@ -58,4 +58,12 @@ class VectorStoreService:
         print(f"🔍 Found {len(documents)} documents")
         return documents
 
-vector_store = VectorStoreService()
+_vector_store = None
+
+def get_vector_store():
+    global _vector_store
+    if _vector_store is None:
+        print("🚀 Initializing Chroma lazily")
+        _vector_store = VectorStoreService()
+    return _vector_store
+
