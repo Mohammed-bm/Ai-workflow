@@ -1,15 +1,29 @@
+# Core
 fastapi
 uvicorn[standard]
+gunicorn
 python-dotenv
-pymupdf
+pydantic-settings
+python-multipart
+
+# DB
+sqlalchemy
+asyncpg
+psycopg2-binary
+
+# Vector DB
 chromadb
+
+# LLM / Tokens
 openai
 google-generativeai
 tiktoken
-pydantic-settings
-python-multipart
-psycopg2-binary
-sentence-transformers
-sqlalchemy
-asyncpg
-gunicorn
+
+# PDFs
+pymupdf
+
+# ML — CPU ONLY (CRITICAL)
+torch==2.2.2+cpu
+sentence-transformers==2.6.1
+
+--extra-index-url https://download.pytorch.org/whl/cpu
