@@ -22,8 +22,8 @@ tiktoken
 # PDFs
 pymupdf
 
-# ML — CPU ONLY (CRITICAL)
-torch==2.2.2+cpu
-sentence-transformers==2.6.1
+# ML — CPU ONLY 
+torch==2.10.0+cpu
+sentence-transformers
 
 --extra-index-url https://download.pytorch.org/whl/cpu
