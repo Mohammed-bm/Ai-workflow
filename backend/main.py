@@ -27,3 +27,7 @@ app.include_router(execute.router)
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+@app.get("/")
+def root():
+    return {"message": "AI Workflow Backend running"}
