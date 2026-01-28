@@ -16,7 +16,7 @@ def get_llm_client():
         genai.configure(api_key=api_key)
 
         # Store the model, not a "client"
-        _client = genai.GenerativeModel("gemini-1.5-flash")
+        _client = genai.GenerativeModel("models/gemini-1.5-flash")
 
     return _client
 
