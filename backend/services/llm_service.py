@@ -7,26 +7,26 @@ def get_llm_client():
     global _client
 
     if _client is None:
-        from google import genai
+        import google.generativeai as genai
 
         api_key = os.getenv("GOOGLE_API_KEY")
         if not api_key:
             raise RuntimeError("GOOGLE_API_KEY not set")
 
-        _client = genai.Client(api_key=api_key)
+        genai.configure(api_key=api_key)
+
+        # Store the model, not a "client"
+        _client = genai.GenerativeModel("gemini-1.5-flash")
 
     return _client
 
-class LLMService:
-    def __init__(self):
-        pass
 
+class LLMService:
     def chat(self, prompt: str) -> str:
-        client = get_llm_client()
-        response = client.models.generate_content(
-            model="models/gemini-flash-latest",
-            contents=prompt,
-        )
+        model = get_llm_client()
+
+        response = model.generate_content(prompt)
+
         return response.text
 
     def generate(self, question: str, context: Optional[str] = None) -> str:
