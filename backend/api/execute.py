@@ -1,5 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
+from db.session import get_db
 from typing import List, Dict, Optional
 from services.workflow_executor import execute_workflow
 from core.workflow_registry import get_workflow  
@@ -21,7 +22,7 @@ class ExecuteResponse(BaseModel):
     error: str = None
 
 @router.post("", response_model=ExecuteResponse)
-async def execute(request: ExecuteRequest):
+async def execute(request: ExecuteRequest, db=Depends(get_db)):
     """
     Execute workflow with query
     
@@ -37,7 +38,7 @@ async def execute(request: ExecuteRequest):
         # Get workflow from ID or use provided nodes/edges
         if request.workflow_id:
             print(f"Using workflow_id: {request.workflow_id}")
-            workflow = get_workflow(request.workflow_id)
+            workflow = get_workflow(request.workflow_id, db=db)
             
             if not workflow:
                 raise HTTPException(
@@ -73,11 +74,13 @@ async def execute(request: ExecuteRequest):
             has_context=result["has_context"],
             metadata=result["metadata"]
         )
-        s
+    except HTTPException as e:
+        raise e
+
     except ValueError as e:
         print(f"❌ Validation error: {e}")
         raise HTTPException(status_code=400, detail=str(e))
         
     except Exception as e:
         print(f"❌ Execution error: {e}")
-        raise HTTPException(status_code=500, detail=f"Execution failed: {str(e)}")
+        raise HTTPException(status_code=500, detail="Execution failed")
