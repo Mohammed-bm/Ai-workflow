@@ -4,7 +4,6 @@ from google import genai
 
 _client = None
 
-
 def get_llm_client():
     global _client
 

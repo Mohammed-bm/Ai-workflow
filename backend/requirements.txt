@@ -16,7 +16,7 @@ chromadb
 
 # LLM / Tokens
 openai
-google-genai
+google
 tiktoken
 
 # PDFs
