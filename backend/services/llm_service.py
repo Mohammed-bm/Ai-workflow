@@ -1,6 +1,6 @@
 import os
 from typing import Optional
-from google import genai
+import google.genai as genai
 
 _client = None
 
